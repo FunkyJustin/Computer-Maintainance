@@ -1,4 +1,4 @@
-Just a simple batch file that runs commonly-run commands on command prompt on your typical windows systems whenever you encounter any computer problems
+Just a simple batch file that runs commonly-run commands on command prompt on your typical windows systems whenever you encounter any computer problems, created using chatgpt and uploaded it here for my own archival purposes
 
 Checks for Administrative Privileges:
         The script checks if it is running with administrative privileges. If not, it restarts itself with elevated permissions using PowerShell.
@@ -22,3 +22,8 @@ Schedules Windows Memory Diagnostics:
         Schedules the Windows Memory Diagnostics Tool (mdsched) to run on the next restart to check for memory issues.
 
 The script ensures comprehensive system maintenance by performing file integrity checks, system health restoration, disk status checks, predictive failure analysis, and memory diagnostics, all while ensuring it runs with the necessary administrative privileges.
+
+
+Installation:
+
+Simply download the computer maintainance.bat file and run as administrator
