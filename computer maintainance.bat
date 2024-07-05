@@ -26,6 +26,10 @@ echo Checking drive predictive failure...
 wmic /namespace:\\root\wmi path MSStorageDriver_FailurePredictStatus
 
 echo.
+echo Running DirectX Diagnostic Tool, please select Display tab manually and look at the message under Notes to see GPU condition...
+dxdiag
+
+echo.
 echo Scheduling Check Disk to run on the next restart...
 echo Note: chkdsk will only check drive C, the boot drive containing the operating system.
 chkdsk C: /f /r /x
