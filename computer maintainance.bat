@@ -10,6 +10,21 @@ if %errorLevel% neq 0 (
     exit /b
 )
 
+:: Check internet connection
+echo Checking internet connection...
+curl -s --head http://www.google.com | find "200 OK" >nul
+
+if errorlevel 1 (
+    echo No internet connection...
+    echo Opening Adjust date/time settings for manual adjustment...
+    start ms-settings:dateandtime
+    timeout /t 5 >nul
+) else (
+    :: Force time synchronization
+    :: Time synchronization can resolve issues with website certificate errors due to incorrect system time.
+    w32tm /resync
+)
+
 echo Running System File Checker...
 sfc /scannow
 
