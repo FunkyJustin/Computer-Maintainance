@@ -4,7 +4,7 @@ net session >nul 2>&1
 if %errorLevel% neq 0 (
     echo Requesting administrative privileges...
     powershell -command "Start-Process '%~f0' -Verb runAs"
-    exit /B
+    exit 
 )
 
 :: Set the backup folder path
