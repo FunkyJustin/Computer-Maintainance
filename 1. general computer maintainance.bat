@@ -17,6 +17,7 @@ curl -s --head http://www.google.com | find "200 OK" >nul
 if errorlevel 1 (
     echo No internet connection...
     echo Opening Adjust date/time settings for manual adjustment...
+    control timedate.cpl
     start ms-settings:dateandtime
     timeout /t 5 >nul
 ) else (
