@@ -30,5 +30,6 @@ Installation:
 
 Simply download the 1.computer maintainance.bat file and run as administrator
 
+---
 
-for the others, they're pretty self explanatory from their filename alone, feel free to modify the code for your purposes especially the directory names or processess names.
+For the other batch files, they're pretty self explanatory from their filename alone, feel free to modify the code for your purposes especially the directory names or processess names.
