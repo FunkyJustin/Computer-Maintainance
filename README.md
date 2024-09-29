@@ -1,3 +1,5 @@
+Readme for 1. general computer maintainance.bat
+
 Just a simple batch file that runs commonly-run commands on command prompt on your typical windows systems whenever you encounter any computer problems, created using chatgpt and uploaded it here for my own archival purposes
 
 Checks for Administrative Privileges:
@@ -26,4 +28,7 @@ The script ensures comprehensive system maintenance by performing file integrity
 
 Installation:
 
-Simply download the computer maintainance.bat file and run as administrator
+Simply download the 1.computer maintainance.bat file and run as administrator
+
+
+for the others, they're pretty self explanatory from their filename alone, feel free to modify the code for your purposes especially the directory names or processess names.
