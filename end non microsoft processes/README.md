@@ -1,3 +1,7 @@
+Here's a sample `README.md` file for your program:
+
+---
+
 # End Non-Microsoft Processes
 
 This program terminates all running processes that are not published by **Microsoft Corporation**. It uses a **PowerShell script** to identify processes based on their publisher and a **batch file** to execute the PowerShell script automatically.
