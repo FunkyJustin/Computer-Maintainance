@@ -1,7 +1,7 @@
 @echo off
 
 :: Check if the script is running with administrative privileges
-:: If not, it will re-run itself with administrative privileges
+:: If not, it will re-run itself with elevated privileges
 net session >nul 2>&1
 if %errorLevel% neq 0 (
     echo Requesting administrative privileges...
@@ -43,34 +43,12 @@ wmic diskdrive get status
 echo Checking drive predictive failure...
 wmic /namespace:\\root\wmi path MSStorageDriver_FailurePredictStatus
 
-:: DirectX Diagnostics
+:: DirectX Diagnostics (runs without waiting for user to close the window)
 echo Running DirectX Diagnostic Tool... Please check the Display tab manually for GPU condition.
-dxdiag
+start /wait dxdiag /t dxdiag.txt
 
-:: Check Disk
+:: Check Disk (Always scan C drive)
 echo.
-echo Scheduling Check Disk...
-echo The C drive (boot drive) will always be scanned.
-echo If you want to scan additional drives (e.g., D E F), enter them below.
-echo Do not include C in your input. Press Enter to skip or wait 30 seconds.
-echo.
-timeout /t 30 /nobreak >nul
-set additionalDrives=
-
-set /p additionalDrives=Enter additional drives (e.g., D E F): 
-
-if defined additionalDrives (
-    for %%D in (%additionalDrives%) do (
-        if /i not "%%D"=="C" (
-            echo Scheduling Check Disk for drive %%D...
-            chkdsk %%D: /f /r /x
-        ) else (
-            echo Skipping duplicate C drive input; it will already be scanned.
-        )
-    )
-)
-
-:: Always scan the C drive
 echo Scheduling Check Disk for C:...
 chkdsk C: /f /r /x
 
