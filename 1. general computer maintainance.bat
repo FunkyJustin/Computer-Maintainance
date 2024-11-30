@@ -9,73 +9,77 @@ if %errorLevel% neq 0 (
     exit
 )
 
-:: Log file setup
-set logFile=diagnostic_log_%date:~-4,4%-%date:~4,2%-%date:~7,2%.txt
-echo Diagnostic Log - %date% %time% > "%logFile%"
-echo ----------------------------------------- >> "%logFile%"
-
 :: Check internet connection
-echo Checking internet connection... >> "%logFile%"
+echo Checking internet connection...
 curl -s --head http://www.google.com | find "200 OK" >nul
 if errorlevel 1 (
-    echo No internet connection... >> "%logFile%"
+    echo No internet connection...
     echo Opening Adjust date/time settings for manual adjustment...
     control timedate.cpl
     start ms-settings:dateandtime
     timeout /t 5 >nul
 ) else (
     :: Force time synchronization
-    echo Internet connection detected. Synchronizing time... >> "%logFile%"
-    w32tm /resync >> "%logFile%" 2>&1
+    echo Internet connection detected. Synchronizing time...
+    w32tm /resync
 )
 
 :: System File Checker
-echo Running System File Checker... >> "%logFile%"
-sfc /scannow >> "%logFile%" 2>&1
+echo Running System File Checker...
+sfc /scannow
 
-echo.
+:: Running DISM to restore health
 echo Running DISM to restore health...
-DISM /Online /Cleanup-Image /RestoreHealth >> "%logFile%" 2>&1
+DISM /Online /Cleanup-Image /RestoreHealth
 
-:: Added Component Cleanup
+:: Running DISM Component Cleanup
 echo Running DISM Component Cleanup...
-DISM.exe /online /cleanup-image /startcomponentcleanup >> "%logFile%" 2>&1
+DISM.exe /online /cleanup-image /startcomponentcleanup
 
 :: Disk Health Check
-echo Checking drive status... >> "%logFile%"
-wmic diskdrive get status >> "%logFile%" 2>&1
+echo Checking drive status...
+wmic diskdrive get status
 
-echo.
-echo Checking drive predictive failure... >> "%logFile%"
-wmic /namespace:\\root\wmi path MSStorageDriver_FailurePredictStatus >> "%logFile%" 2>&1
+echo Checking drive predictive failure...
+wmic /namespace:\\root\wmi path MSStorageDriver_FailurePredictStatus
 
 :: DirectX Diagnostics
-echo Running DirectX Diagnostic Tool... Please check the Display tab manually for GPU condition. >> "%logFile%"
+echo Running DirectX Diagnostic Tool... Please check the Display tab manually for GPU condition.
 dxdiag
 
 :: Check Disk
-echo Scheduling Check Disk... >> "%logFile%"
-echo Defaulting to boot drive (C:). >> "%logFile%"
-set bootDrive=C
-chkdsk %bootDrive% /f /r /x >> "%logFile%" 2>&1
-
-:: Memory Diagnostics
-echo Scheduling Windows Memory Diagnostics Tool to run on the next restart... >> "%logFile%"
-mdsched >> "%logFile%" 2>&1
-
-:: User Prompt to Specify Drives
 echo.
-echo If you would like to specify additional drives for Check Disk, enter them separated by spaces (e.g., D E F) or press Enter to skip.
-set /p drives=Enter additional drives (leave blank for none): 
+echo Scheduling Check Disk...
+echo The C drive (boot drive) will always be scanned.
+echo If you want to scan additional drives (e.g., D E F), enter them below.
+echo Do not include C in your input. Press Enter to skip or wait 30 seconds.
+echo.
+timeout /t 30 /nobreak >nul
+set additionalDrives=
 
-if not "%drives%"=="" (
-    for %%D in (%drives%) do (
-        echo Scheduling Check Disk for drive %%D... >> "%logFile%"
-        chkdsk %%D: /f /r /x >> "%logFile%" 2>&1
+set /p additionalDrives=Enter additional drives (e.g., D E F): 
+
+if defined additionalDrives (
+    for %%D in (%additionalDrives%) do (
+        if /i not "%%D"=="C" (
+            echo Scheduling Check Disk for drive %%D...
+            chkdsk %%D: /f /r /x
+        ) else (
+            echo Skipping duplicate C drive input; it will already be scanned.
+        )
     )
 )
 
-:: Pause for review
+:: Always scan the C drive
+echo Scheduling Check Disk for C:...
+chkdsk C: /f /r /x
+
+:: Memory Diagnostics
 echo.
-echo Diagnostics completed. Logs have been saved to "%logFile%".
+echo Scheduling Windows Memory Diagnostics Tool to run on the next restart...
+mdsched
+
+:: Pause for review if not unattended
+echo.
+echo Diagnostics completed.
 pause
